@@ -171,7 +171,7 @@ class Billiard(object):
 
         t_min, obs_min = INF, None
         for obs in self.obstacles:
-            t = obs.calc_toi(pos, vel, radius)
+            t = obs.calc_toi(pos, vel, radius=0)
             if t < t_min:
                 t_min, obs_min = t, obs
 

@@ -226,3 +226,45 @@ class InfiniteWall(Obstacle):
         vertices = np.asarray([self.start_point, self.end_point])
         indices = [0, 1]
         return (vertices, indices, gl.GL_LINES)
+
+class Square(Obstacle):
+    """A square shaped obstacle where balls are not allowed on the inside."""
+
+    def __init__(self, center, length):
+        """Create a square obstacle with the given center and length."""
+        self.center = np.asarray(center)
+        self.length = length
+        self.ts = []
+
+    def calc_toi(self, pos, vel, radius):
+        """Calculate the velocity of a ball after colliding with the obstacle."""
+        t_left = ((self.center[0]-(self.length/2))-pos[0])/vel[0]
+        t_right = ((self.center[0]+(self.length/2))-pos[0])/vel[0]
+        t_up = ((self.center[1]+(self.length/2))-pos[1])/vel[1]
+        t_down = ((self.center[1]-(self.length/2))-pos[1])/vel[1]
+        self.ts = [t_left, t_right, t_up, t_down]
+        print(self.ts)
+        return min(self.ts)
+
+    def collide(self, pos, vel, radius=0):
+        """Calculate the velocity of a ball after colliding with the obstacle."""
+        pt = [i for i in self.ts if i>0]
+        index = self.ts.index(min(pt))
+        if index < 2 : #left
+            vel[0] = -vel[0]
+        else:
+            vel[1] = -vel[1]
+        return vel
+    def plot(self, ax, color, **kwargs):
+        """Draw the disk onto the given matplotlib axes."""
+        patch = mpl.patches.Rectangle(self.center, self.length, self.length, angle=0.0, facecolor=color, **kwargs
+        )
+        ax.add_patch(patch)
+
+
+
+        
+
+
+
+
